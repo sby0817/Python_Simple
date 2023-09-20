@@ -29,10 +29,10 @@ print(lang[2])
 # - 부분 문자열 추출하고 싶은 경우
 # - 시작인덱스, 끝인덱스 필요
 msg = "Python is all you need"
-print(msg[0:6]) # 끝인덱스 +1
+print(msg[0:6])  # 끝인덱스 +1
 print(msg[:6])  # 시작 인덱스 생략 -> 자동 0 입력
 print(msg[3:])  # 끝 인덱스 생략 -> 자동 -1 입력
-print(msg[:])   # 처음부터 끝까지
+print(msg[:])  # 처음부터 끝까지
 
 # 프로그래밍 언어!
 # 컴퓨터 계열 학과 -> 프로그래밍 언어 1개는 마스터
@@ -55,3 +55,59 @@ print(msg[:])   # 처음부터 끝까지
 print(msg[18:22])
 # 역방향
 print(msg[-4:])
+
+# 4. 문자열 함수
+str = "Hello World"
+
+print("=" * 50)
+# 4-1. len() : 문자열 길이 계산
+print(len(str))
+
+# 4-3. upper() and lower() : 대소문자 변경
+# - ID = "ChoLong02" -> "cholong02".lower
+# - 데이터 전처리 -> 1A, 1a -> upper() 1A 통일
+print(str.upper())
+print(str.lower())
+
+# 4-3. replace() : 문자열 내의 특정 문자 치환
+print(str.replace("H", "J"))
+
+# 4-4. split() : 구분자를 기준으로 문자열 분할(Default: 공백)
+b = "hello world what a nice weather"
+print(b.split())
+print(b.split("w"))
+
+# 4-5. strip() : 문자열의 좌우공백 제거
+id = "                      python1004                "
+print(id)
+print(id.strip())
+
+# id ="   ChoLong1004     "
+# id.lower() "    cholong1004"
+print(id.lower().strip())  # "cholong1004"
+
+# 4-6. find() and rfind() : 문자열 내부의 특정 문자 위치 인덱스 출력
+print(str.find("o"))      # Hell^o^ World
+print(str.rfind("o"))     # Hello W^o^rld
+print(str.find("world"))  # 못 찾으면 -1 출력
+print(str.find("World"))  # 단어의 첫 글자 인덱스
+print(str.rfind("World"))  # 단어의 첫 글자 인덱스
+
+# 4-7. in() : 특정 문자열 포함하는지 확인 (True, False 출력)
+print("Hi" in "Hi Python")
+
+# 문제
+#   "abc123@gmail.com"
+#   "ter@naver.com"
+id = "cherry1004@gmail.com"
+idx = id.find("@")
+val = id[:idx]
+print(val)  # cherry1004 출력
+
+#     "www.google.com"
+#     "www.daum.net"
+url = "www.naver.com"
+start = url.find(".") + 1
+end = url.rfind(".")
+val = url[start:end]
+print(val)  # 출력: google or daum or naver
