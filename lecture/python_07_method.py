@@ -52,3 +52,57 @@
 # 6. 함수 종료: 1. return, 2. 들여쓰기 끝
 # 7. parameter와  return은 생략 가능
 #   (입력과 반환이 없는 함수도 존재)
+
+# ** 함수 실습 **
+# 1.함수 정의
+def sum_two_value(x, y):
+    n = x + y
+    print(n)
+    return n
+
+# 2. 함수 호출
+result = sum_two_value(5, 10)
+print(result)
+
+# 3.인자(Parameter or argument)
+#  - 함수에 전달되는 입력값(input)
+#  - 함수 정의문과 호출문의 parameter 갯수가 동일해야함
+#  - parameter로 int, str, float, bool, list 등 사용 가능
+#  - 심지어 사용자 정의 함수를 parameter로 전달 가능
+#  - parameter값 2개 이상 사용시 정의 된 순서대로 전달해야함
+
+def sub_two_value(x: int, y: int):
+    n = x - y
+    return n
+a, b = 15, 20
+num = sub_two_value(a, b)
+print(num)
+
+# # 4.Default Parameter
+# #  - 함수 호춯시 parameter를 전달 받지 못한 경우 기본값 사용
+# def test(a, b, c=3):        # (O)
+# def test(a, b=2, c=3):      # (O)
+# def test(a=1, b=2, c=3):    # (O)
+# def test(a=1, b, c):        # (X)
+# def test(a, b=2, c):        # (X)
+# def test(a=1, b=2, c):      # (X)
+
+# 5. return
+#  - 기본적으로 함수 종료 의미
+#  - return 반환값: 함수호출문으로 값 전달(tuple type)
+#  - return만 사용하면 함수호출문으로 None값 전달
+#  - return이 없는 경우 들여쓰기 종료 함수 종료로 간주
+#  - return문 다음에 오는 코드는 실행 안됨(Error X)
+def soju_yn(age):
+    if age >= 20:
+        return 1  # 구매 가능
+    else:
+        return 0  # 구매 불가
+
+age = int(input("나이: "))
+result = soju_yn(age)
+if result == 1:
+    print("주류 구매 가능")
+elif result == 0:
+    print("주류 구매 불가")
+
