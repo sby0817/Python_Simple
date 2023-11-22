@@ -102,10 +102,10 @@ for item in review_list:
     if len(review_date) < 7:
         # 2) "17시간 전" -> 숫자만 추출 17
         reg_hour = int(re.sub(r"[^~0-9]", "", review_date))
-        # 3) 등록일자 = 현재 시간 - 17
+        # 3) 등록 일자 = 현재 시간 - 17
         # print(f"현재 시간: {datetime.now()}")  # 년 월 일 시 분 초 나노초
         review_date = datetime.now() - timedelta(hours = reg_hour)
         # print(f"등록 시간: {review_date}")
         # 4) 계산된 등록 일자 날짜 포맷 변경(다음 영화 리뷰 날짜 포맷)
         review_date = review_date.strftime("%Y. %m. %d. %H:%M")
-    print(f"  - 날짜: {review_date}")
+        print(f"  - 날짜: {review_date}")
