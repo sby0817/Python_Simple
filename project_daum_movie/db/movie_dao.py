@@ -14,7 +14,7 @@ def add_review(data):
                 INSERT INTO tbl_review(title, review, score, writer, reg_date)
                 VALUES(%(title)s, %(review)s, %(score)s, %(writer)s, %(reg_date)s)
               """
-        # 4. 작업 시작
+        # 4.작업 시작
         curs.execute(sql, data)
     except Exception as e:
         print(e)
