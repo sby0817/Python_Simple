@@ -1,4 +1,4 @@
-from db.common.connection import connection
+from project_daum_movie.db.common.connection import connection
 
 
 # 리뷰 저장
@@ -20,4 +20,30 @@ def add_review(data):
         print(e)
     finally:
         # 5. 자원 해제 (connection 맺는다는 걸 끊겠다는 뜻)
+        conn.close()
+
+
+def get_last_review():
+    conn = connection()
+
+    try:
+        curs = conn.cursor()
+        sql = """
+                SELECT *
+                FROM (
+                    SELECT DATE_FORMAT(STR_TO_DATE(reg_date, '%Y. %m. %d. %H:%i'), '%Y%m%d%H%i') AS int_regdate FROM tbl_review
+                    ORDER BY reg_date
+                ) EX1
+                ORDER BY int_regdate DESC LIMIT 1;
+              """
+        curs.execute(sql)
+        # INSERT, DELETE, UPDATE → 동작(Check)
+        # SELECT → DB로부터 데이터 받기(dict type)
+        #  - 단건: fetchone()
+        #  - 복수건: fetchall()
+        result = curs.fetchone()
+        return result
+    except Exception as e:
+        print(e)
+    finally:
         conn.close()

@@ -31,7 +31,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def review_collector(movie_code):
+def review_collector(movie_code, last_date):
     # 1. Selenium 전용 웹 브라우저 구동
     options = Options()
     options.add_experimental_option("detach", True)
@@ -88,20 +88,9 @@ def review_collector(movie_code):
     print(f"= 전체 리뷰: {len(review_list)}건")
 
     # item: 리뷰 1건(평점, 리뷰, 작성자, 작성일자)
+    count = 0
     for item in review_list:
-        print("=" * 100)
-        review_score = item.select("div.ratings")[0].get_text()
-        print(f"  - 평점: {review_score}")
-
-        review_content = item.select("p.desc_txt")[0].get_text().strip()
-        # \n : 한 줄 개행 -> \n을 제거
-        review_content = re.sub("\n", "", review_content)
-        print(f"  - 리뷰: {review_content}")
-
-        review_writer = item.select("a.link_nick > span")[1].get_text()  # [1].get_text()를 안 하고 [0]으로 하면 [댓글작성자, 작성자, 댓글 모아보기]가 다 나옴
-        print(f"  - 작성자: {review_writer}")
-
-
+        # 수집 리뷰 Date와 last_date(DB) 비교
         # 다음 영화 리뷰 날짜 표시방법
         # 1. "조금전"
         # 2. "?분전"
@@ -122,18 +111,34 @@ def review_collector(movie_code):
             reg_hour = int(re.sub(r"[^~0-9]", "", review_date))
             review_date = datetime.now() - timedelta(hours=reg_hour)
             review_date = review_date.strftime("%Y. %m. %d. %H:%M")
+        collect_date = int(re.sub(r"[^~0-9]", "", review_date))
+        if last_date >= collect_date:
+            continue
 
-        # # 24시간 이내에 작성된 리뷰의 날짜 -> 24시간 전, 3시간 전 -> 다음 영화 날짜(2023. 11. 17. 2:12)
-        # # 1) 24시간 전, 17시간 전과 같은 날짜 찾기
-        # if len(review_date) < 7:
-        #     # 2) "17시간 전" -> 숫자만 추출 17
-        #     reg_hour = int(re.sub(r"[^~0-9]", "", review_date))
-        #     # 3) 등록 일자 = 현재 시간 - 17
-        #     # print(f"현재 시간: {datetime.now()}")  # 년 월 일 시 분 초 나노초
-        #     review_date = datetime.now() - timedelta(hours = reg_hour)
-        #     # print(f"등록 시간: {review_date}")
-        #     # 4) 계산된 등록 일자 날짜 포맷 변경(다음 영화 리뷰 날짜 포맷)
-        #     review_date = review_date.strftime("%Y. %m. %d. %H:%M")
+            # # 24시간 이내에 작성된 리뷰의 날짜 -> 24시간 전, 3시간 전 -> 다음 영화 날짜(2023. 11. 17. 2:12)
+            # # 1) 24시간 전, 17시간 전과 같은 날짜 찾기
+            # if len(review_date) < 7:
+            #     # 2) "17시간 전" -> 숫자만 추출 17
+            #     reg_hour = int(re.sub(r"[^~0-9]", "", review_date))
+            #     # 3) 등록 일자 = 현재 시간 - 17
+            #     # print(f"현재 시간: {datetime.now()}")  # 년 월 일 시 분 초 나노초
+            #     review_date = datetime.now() - timedelta(hours = reg_hour)
+            #     # print(f"등록 시간: {review_date}")
+            #     # 4) 계산된 등록 일자 날짜 포맷 변경(다음 영화 리뷰 날짜 포맷)
+            #     review_date = review_date.strftime("%Y. %m. %d. %H:%M")
+
+        count += 1
+        print("=" * 100)
+        review_score = item.select("div.ratings")[0].get_text()
+        print(f"  - 평점: {review_score}")
+
+        review_content = item.select("p.desc_txt")[0].get_text().strip()
+        # \n : 한 줄 개행 -> \n을 제거
+        review_content = re.sub("\n", "", review_content)
+        print(f"  - 리뷰: {review_content}")
+
+        review_writer = item.select("a.link_nick > span")[1].get_text()  # [1].get_text()를 안 하고 [0]으로 하면 [댓글작성자, 작성자, 댓글 모아보기]가 다 나옴
+        print(f"  - 작성자: {review_writer}")
         print(f"  - 날짜: {review_date}")
 
         # MariaDB 저장(제목, 리뷰, 평점, 작성자, 작성일자)
@@ -145,3 +150,7 @@ def review_collector(movie_code):
             "reg_date": review_date
         }
         add_review(data)
+
+    # 수집한 리뷰 건수 출력
+    now = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
+    print(f"{now} → 수집한 리뷰 {count}건")
