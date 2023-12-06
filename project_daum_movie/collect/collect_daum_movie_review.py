@@ -16,7 +16,7 @@
 #   - URL: https://sites.google.com/chromium.org/driver/
 #  2. 실시간(코드) 다운로드
 
-from db.movie_dao import add_review
+from db.movie_dao import add_review, get_last_review
 
 import math
 import re
@@ -31,7 +31,13 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def review_collector(movie_code, last_date):
+def review_collector(movie_code):
+    last_date = get_last_review()
+    if last_date == None:
+        last_date = 0
+    else:
+        last_date = int(last_date["int_regdate"])
+
     # 1. Selenium 전용 웹 브라우저 구동
     options = Options()
     options.add_experimental_option("detach", True)
@@ -149,7 +155,7 @@ def review_collector(movie_code, last_date):
             "writer": review_writer,
             "reg_date": review_date
         }
-        add_review(data)
+        add_review, get_last_review(data)
 
     # 수집한 리뷰 건수 출력
     now = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
